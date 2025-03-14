@@ -57,12 +57,14 @@ vector_store = st.session_state.vector_store
 
 # Generate response
 if st.button("Generate Response"):
-    if user_query.strip():
+    if uploaded_file and user_query and user_query.strip() and texts:
         with st.spinner("Generating response..."):
             vector_store.add_texts(texts)
             context = vector_store.retrieve(user_query)
             response = llm.query(context, user_query, llm_name, temperature=temperature)
             st.subheader("💡 Response")
             st.write(response)
+    elif uploaded_file is None:
+        st.warning("Please upload a PDF document before generating a response.")
     else:
         st.warning("Please enter a question before generating a response.")
