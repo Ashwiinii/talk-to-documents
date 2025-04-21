@@ -1,6 +1,6 @@
 import streamlit as st
-from llm_file import LLMInterface
-from RAG_pipeline import FAISSVectorStore
+from LLM.llm import LLMInterface
+from RAG.RAG_pipeline import FAISSVectorStore
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import torch
@@ -8,27 +8,21 @@ import os
 
 torch.classes.__path__ = [os.path.join(torch.__path__[0], torch.classes.__file__)]
 
-# Initialize LLM interface
 llm = LLMInterface()
 
-# Streamlit page configuration
 st.set_page_config(page_title="RAG Chatbot", layout="wide")
 st.title("💬 Talk to your docs")
 
-# Sidebar settings
 st.sidebar.header("Model Settings")
 
-# Display a dropdown to select the model name
-llm_name = st.sidebar.selectbox("Model Name", ("phi4"))
+llm_name = st.sidebar.selectbox("Model Name", ("phi4",))
 
 temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.5)
 
-# File upload section
 st.write("### Upload the files")
 uploaded_file = st.file_uploader("Upload PDF documents", type=["pdf"])
 
 
-# Function to extract text from PDFs
 def extract_text_from_pdfs(temp_file):
     loader = PyPDFLoader(temp_file)
     data = loader.load()
@@ -38,7 +32,6 @@ def extract_text_from_pdfs(temp_file):
     return texts
 
 
-# Process uploaded file
 texts = []
 if uploaded_file:
     temp_file = "./temp.pdf"
@@ -46,16 +39,13 @@ if uploaded_file:
         file.write(uploaded_file.getvalue())
     texts = extract_text_from_pdfs(temp_file)
 
-# User query input
 user_query = st.text_area("Enter your question:")
 
-# Initialize vector store
 if "vector_store" not in st.session_state:
     st.session_state.vector_store = FAISSVectorStore()
 
 vector_store = st.session_state.vector_store
 
-# Generate response
 if st.button("Generate Response"):
     if uploaded_file and user_query and user_query.strip() and texts:
         with st.spinner("Generating response..."):

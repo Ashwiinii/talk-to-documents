@@ -1,6 +1,6 @@
 import faiss
 from sentence_transformers import SentenceTransformer
-from prompt import RAG_PROMPT_TEMPLATE
+from LLM.prompt import RAG_PROMPT_TEMPLATE
 
 
 class FAISSVectorStore:

@@ -1,6 +1,6 @@
 from typing import List
 from openai import OpenAI
-from prompt import RAG_PROMPT_TEMPLATE
+from LLM.prompt import RAG_PROMPT_TEMPLATE
 import streamlit as st
 
 
